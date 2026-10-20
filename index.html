@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Catalogue</title>
+</head>
+
+<body>
+    <h1>Book Catalogue</h1>
+
+    <div id="bookList"></div>
+
+    <script>
+        fetch("book.xml")
+            .then(function (response) {
+                return response.text();
+            })
+            .then(function (xmlText) {
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(xmlText, "text/xml");
+                
+                const books = xmlDoc.getElementsByTagName("book");
+                const bookList = document.getElementById("bookList");
+
+                for (let i = 0; i < books.length; i++) {
+                    const book = books[i];
+
+                    const id = book.getAttribute("id");
+                    const title = book.querySelector("title").textContent;
+                    const author = book.querySelector("author").textContent;
+                    const price = book.querySelector("price").textContent;
+
+                    const bookDiv = document.createElement("div");
+
+                    bookDiv.innerHTML = `
+                    <h2>${title}</h2>
+                    <p>ID: ${id}</p>
+                    <p>Author: ${author}</p>
+                    <p>Price: $${price}</p>
+                    `;
+
+                    bookList.appendChild(bookDiv);
+                }
+            })
+            .catch(function (error) {
+                console.error("Error loading XML:", error);
+            });
+    </script>
+</body>
+
+</html>
