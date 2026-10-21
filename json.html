@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profiles</title>
+</head>
+
+<body>
+    <h1>User Profiles</h1>
+
+    <div id="userList"></div>
+
+    <script>
+        fetch("userProfiles.json")
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Fetch error: " + response.status);
+                } else {
+                    return response.json();
+                }
+            })
+            .then(json => {
+                const userList = document.getElementById("userList");
+
+                for (let i = 0; i < json.length; i++) {
+                    const user = json[i];
+
+                    const userDiv = document.createElement("div");
+
+                    userDiv.innerHTML = `
+                        <h2>${user.firstName} ${user.lastName}</h2>
+
+                        <p>Email: ${user.email}</p>
+                        <p>Date of birth: ${user.dateOfBirth}</p>
+
+                        <h3>Address</h3>
+                        <p>Street: ${user.address.street}</p>
+                        <p>City: ${user.address.city}</p>
+                        <p>State: ${user.address.state}</p>
+                        <p>Zip code: ${user.address.zipCode}</p>
+
+                        <h3>Preferences</h3>
+                        <p>Theme: ${user.preferences.theme}</p>
+                        <p>Language: ${user.preferences.language}</p>
+                        <p>Notifications: ${user.preferences.notifications}</p>
+                        <p>Subscription: ${user.preferences.subscription}</p>
+
+                        <hr>
+                    `;
+
+                    userList.appendChild(userDiv);
+                }
+            })
+            .catch(err => {
+                console.error("Fetch error: " + err.message);
+
+                document.getElementById("userList").textContent =
+                    "The user profiles could not be loaded.";
+            });
+    </script>
+</body>
+
+</html>
